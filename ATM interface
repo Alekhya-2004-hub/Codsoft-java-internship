@@ -1,0 +1,121 @@
+import java.util.Scanner;
+
+// Class to represent the user's bank account
+class BankAccount {
+    private double balance;
+
+    public BankAccount(double initialBalance) {
+        if (initialBalance < 0) {
+            throw new IllegalArgumentException("Initial balance cannot be negative.");
+        }
+        this.balance = initialBalance;
+    }
+
+    public double getBalance() {
+        return balance;
+    }
+
+    public boolean deposit(double amount) {
+        if (amount <= 0) {
+            System.out.println(" Error: Deposit amount must be positive.");
+            return false;
+        }
+        balance += amount;
+        return true;
+    }
+
+    public boolean withdraw(double amount) {
+        if (amount <= 0) {
+            System.out.println(" Error: Withdrawal amount must be positive.");
+            return false;
+        }
+        if (amount > balance) {
+            System.out.println(" Error: Insufficient funds. Your balance is $" + balance);
+            return false;
+        }
+        balance -= amount;
+        return true;
+    }
+}
+
+// Class to represent the ATM machine
+class ATM {
+    private BankAccount account;
+    private Scanner scanner;
+
+    public ATM(BankAccount account) {
+        this.account = account;
+        this.scanner = new Scanner(System.in);
+    }
+
+    // ===== USER INTERFACE (Menu System) =====
+    public void displayMenu() {
+        System.out.println("\n=== ATM MACHINE ===");
+        System.out.println("1. Check Balance");
+        System.out.println("2. Withdraw");
+        System.out.println("3. Deposit");
+        System.out.println("4. Exit");
+        System.out.print(" Please select an option (1-4): ");
+    }
+
+    public void checkBalance() {
+        System.out.printf(" Your current balance: $%.2f%n", account.getBalance());
+    }
+
+    public void withdraw() {
+        System.out.print("Enter amount to withdraw: $");
+        double amount = scanner.nextDouble();
+        if (account.withdraw(amount)) {
+            System.out.printf(" Successfully withdrew: $%.2f%n", amount);
+            System.out.printf(" New balance: $%.2f%n", account.getBalance());
+        }
+    }
+
+    public void deposit() {
+        System.out.print("Enter amount to deposit: $");
+        double amount = scanner.nextDouble();
+        if (account.deposit(amount)) {
+            System.out.printf(" Successfully deposited: $%.2f%n", amount);
+            System.out.printf(" New balance: $%.2f%n", account.getBalance());
+        }
+    }
+
+    public void run() {
+        System.out.println(" Welcome to the ATM Machine!");
+        boolean running = true;
+
+        while (running) {
+            displayMenu();
+            int choice = scanner.nextInt();
+
+            switch (choice) {
+                case 1:
+                    checkBalance();
+                    break;
+                case 2:
+                    withdraw();
+                    break;
+                case 3:
+                    deposit();
+                    break;
+                case 4:
+                    System.out.println(" Thank you for using our ATM. Goodbye!");
+                    running = false;
+                    break;
+                default:
+                    System.out.println(" Invalid option. Please select 1-4.");
+            }
+        }
+
+        scanner.close();
+    }
+}
+
+// Main class to run the ATM simulation
+public class ATMinterface{
+    public static void main(String[] args) {
+        BankAccount account = new BankAccount(1000.00); // Starting with $1000
+        ATM atm = new ATM(account);
+        atm.run();
+    }
+}
